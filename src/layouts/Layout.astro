@@ -306,13 +306,15 @@ const bannerOffset =
 	}
 	@layer utilities {
 		@media (width >= 1280px) {
-			.enable-banner #sidebar-sticky {
+			/* Fullscreen removes the banner extension transform, so only the
+			   standard banner layout needs the matching sticky compensation. */
+			.enable-banner:not(.fullscreen-banner) #sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
-			.enable-banner #left-sidebar-sticky {
+			.enable-banner:not(.fullscreen-banner) #left-sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
-			.enable-banner #right-sidebar-sticky {
+			.enable-banner:not(.fullscreen-banner) #right-sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
 		}
