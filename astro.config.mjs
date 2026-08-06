@@ -22,7 +22,6 @@ import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { siteConfig } from "./src/config/index.ts";
 import { buildIconInclude } from "./src/plugins/astro-icon-include.mjs";
-import { imagePreviews } from "./src/utils/image-preview.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -41,6 +40,8 @@ import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkSiteMetadata } from "./src/plugins/remark-site-metadata.mjs";
 import { remarkXMetadata } from "./src/plugins/remark-x-metadata.mjs";
 import { largeContentStorePlugin } from "./src/plugins/vite-large-content-store.mjs";
+import { resolveFontMode } from "./src/utils/fontMode.ts";
+import { imagePreviews } from "./src/utils/image-preview.mjs";
 
 const sitemapLocaleAliases = {
 	cn: "zh-CN",
@@ -130,53 +131,57 @@ function shouldIncludeInSitemap(page) {
 	return pathname !== `/${defaultSitemapLocale}/`;
 }
 
+const customFontsEnabled = resolveFontMode(siteConfig) === "custom";
+
 // https://astro.build/config
 export default defineConfig({
-	fonts: [
-		{
-			name: "JetBrains Mono",
-			cssVariable: "--font-jetbrains-mono",
-			provider: fontProviders.fontsource(),
-			styles: ["normal", "italic"],
-		},
-		{
-			name: "ZenMaruGothic-Medium",
-			cssVariable: "--font-body",
-			provider: fontProviders.local(),
-			options: {
-				variants: [
-					{
-						src: ["./src/assets/fonts/ZenMaruGothic-Medium.ttf"],
-						weight: "500",
-						style: "normal",
+	fonts: customFontsEnabled
+		? [
+				{
+					name: "JetBrains Mono",
+					cssVariable: "--font-jetbrains-mono",
+					provider: fontProviders.fontsource(),
+					styles: ["normal", "italic"],
+				},
+				{
+					name: "ZenMaruGothic-Medium",
+					cssVariable: "--font-body",
+					provider: fontProviders.local(),
+					options: {
+						variants: [
+							{
+								src: ["./src/assets/fonts/ZenMaruGothic-Medium.woff2"],
+								weight: "500",
+								style: "normal",
+							},
+						],
 					},
-				],
-			},
-			// These variables are composed into --font-sans below. Keep their
-			// fallback lists empty; otherwise a system fallback after this Latin
-			// font prevents the following CJK font from ever being considered.
-			fallbacks: [],
-			optimizedFallbacks: false,
-		},
-		{
-			name: "Loli",
-			cssVariable: "--font-cjk",
-			provider: fontProviders.local(),
-			options: {
-				variants: [
-					{
-						src: ["./src/assets/fonts/loli.ttf"],
-						weight: "400",
-						style: "normal",
+					// These variables are composed into --font-sans below. Keep their
+					// fallback lists empty; otherwise a system fallback after this Latin
+					// font prevents the following CJK font from ever being considered.
+					fallbacks: [],
+					optimizedFallbacks: false,
+				},
+				{
+					name: "Loli",
+					cssVariable: "--font-cjk",
+					provider: fontProviders.local(),
+					options: {
+						variants: [
+							{
+								src: ["./src/assets/fonts/loli.woff2"],
+								weight: "400",
+								style: "normal",
+							},
+						],
 					},
-				],
-			},
-			// The final system fallback belongs to --font-sans, not this partial
-			// CJK font stack.
-			fallbacks: [],
-			optimizedFallbacks: false,
-		},
-	],
+					// The final system fallback belongs to --font-sans, not this partial
+					// CJK font stack.
+					fallbacks: [],
+					optimizedFallbacks: false,
+				},
+			]
+		: [],
 
 	site: siteConfig.siteURL,
 	base: "/",
@@ -246,7 +251,7 @@ export default defineConfig({
 				borderColor: "none",
 				codeFontSize: "0.875rem",
 				codeFontFamily:
-					"var(--font-jetbrains-mono), SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+					"var(--font-jetbrains-mono, ui-monospace), SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
 				frames: {
 					editorBackground: "var(--codeblock-bg)",

@@ -76,7 +76,9 @@ export interface SiteConfig {
 		targetWidth?: number; // 目标宽度，低于此宽度时开始缩放
 	};
 
-	// 字体现在通过 astro.config.mjs 的 fonts 选项配置（Astro Font API）
+	font: {
+		mode: "custom" | "system"; // custom=加载 ZenMaruGothic、Loli 和 JetBrains Mono；system=不请求自定义字体
+	};
 
 	// 添加bangumi配置
 	bangumi?: {

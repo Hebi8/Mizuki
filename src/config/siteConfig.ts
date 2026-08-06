@@ -56,6 +56,11 @@ export const siteConfig: SiteConfig = {
 		targetWidth: 2000, // 目标宽度，低于此宽度时开始缩放
 	},
 
+	font: {
+		// custom 保持 ZenMaruGothic -> Loli -> 系统字体的显示顺序；system 不加载任何自定义字体
+		mode: "custom",
+	},
+
 	bangumi: {
 		userId: "lagos", // 在此处设置你的Bangumi用户ID，可以设置为 "sai" 测试
 		fetchOnDev: false, // 是否在开发环境下获取 Bangumi 数据（默认 false），获取前先执行 pnpm build 构建 json 文件
@@ -217,7 +222,6 @@ export const siteConfig: SiteConfig = {
 		// }
 	],
 
-	// 字体现在通过 astro.config.mjs 的 fonts 选项配置（Astro Font API）
 	showLastModified: true, // 控制"上次编辑"卡片显示的开关
 	pageProgressBar: {
 		enable: true, // 启用页面顶部进度条
