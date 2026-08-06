@@ -6,7 +6,7 @@ export function resolveFontMode(
 	config: SiteConfig,
 	environmentMode = process.env.MIZUKI_FONT_MODE,
 ): FontMode {
-	const mode = environmentMode ?? config.font.mode;
+	const mode = environmentMode ?? config.font?.mode ?? "custom";
 
 	if (mode !== "custom" && mode !== "system") {
 		throw new Error(
