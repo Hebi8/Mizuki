@@ -120,16 +120,16 @@ export function calculateGridLayout(
 	// 动态网格布局类名 - 根据侧边栏模式和是否有组件调整列宽
 	let desktopGridCols = "lg:grid-cols-1";
 	if (desktopShowLeftSidebar && desktopShowRightSidebar) {
-		desktopGridCols = "lg:grid-cols-[17.5rem_1fr_17.5rem]";
+		desktopGridCols = "lg:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]";
 	} else if (desktopShowLeftSidebar) {
-		desktopGridCols = "lg:grid-cols-[17.5rem_1fr]";
+		desktopGridCols = "lg:grid-cols-[17.5rem_minmax(0,1fr)]";
 	} else if (desktopShowRightSidebar) {
-		desktopGridCols = "lg:grid-cols-[1fr_17.5rem]";
+		desktopGridCols = "lg:grid-cols-[minmax(0,1fr)_17.5rem]";
 	}
 
 	const gridCols = `
 		${mobileShowSidebar ? "grid-cols-1" : "grid-cols-1"}
-		${tabletAnySidebar ? "md:grid-cols-[17.5rem_1fr]" : "md:grid-cols-1"}
+		${tabletAnySidebar ? "md:grid-cols-[17.5rem_minmax(0,1fr)]" : "md:grid-cols-1"}
 		${desktopGridCols}
 	`
 		.trim()
@@ -167,7 +167,7 @@ export function calculateGridLayout(
 	}
 
 	const mainContentClass = `
-		transition-swup-fade overflow-hidden w-full
+		transition-swup-fade overflow-hidden min-w-0 w-full
 		col-span-1 row-start-1 row-end-2
 		${tabletAnySidebar ? "md:col-start-2 md:col-end-3" : "md:col-start-1 md:col-end-2"}
 		${desktopShowSidebar ? desktopMainPos : "lg:col-span-1"}

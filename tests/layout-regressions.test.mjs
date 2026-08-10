@@ -119,5 +119,34 @@ describe("Post TOC regressions", () => {
 			/--toc-width:\s*clamp\(0rem,[\s\S]*?var\(--page-width\)[\s\S]*?22rem\)/,
 		);
 	});
+});
 
+const gridLayoutUtilsSource = await readFile(
+	new URL("../src/utils/grid-layout-utils.ts", import.meta.url),
+	"utf8",
+);
+
+describe("Main grid width regressions", () => {
+	it("allows the main track to shrink within the existing sidebar widths", () => {
+		assert.match(
+			gridLayoutUtilsSource,
+			/grid-cols-\[17\.5rem_minmax\(0,1fr\)_17\.5rem\]/,
+		);
+		assert.match(
+			gridLayoutUtilsSource,
+			/transition-swup-fade overflow-hidden min-w-0 w-full/,
+		);
+		assert.doesNotMatch(
+			gridLayoutUtilsSource,
+			/grid-cols-\[[^\]]*(?<![,(])1fr/,
+		);
+		assert.equal(
+			(
+				bannerStyles.match(
+					/grid-template-columns: 17\.5rem minmax\(0, 1fr\) !important/g,
+				) ?? []
+			).length,
+			2,
+		);
+	});
 });
