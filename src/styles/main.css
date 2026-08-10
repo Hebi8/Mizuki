@@ -670,3 +670,8 @@ html {
 :root:not(.dark) .custom-md spoiler {
   --_spoiler-mask: color-mix(in oklch, var(--primary) 55%, white 45%);
 }
+
+/* 文章页只保留 CardTOC；标记随 Swup 主内容更新。浮动目录保持可用。 */
+body:has(#page-overlay-data[data-is-post="true"]) #toc-wrapper {
+	display: none;
+}

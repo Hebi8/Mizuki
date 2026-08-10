@@ -89,3 +89,35 @@ describe("Page scaling regressions", () => {
 		);
 	});
 });
+
+const cardTocSource = await readFile(
+	new URL("../src/components/widgets/card-toc/CardTOC.astro", import.meta.url),
+	"utf8",
+);
+
+const variablesSource = await readFile(
+	new URL("../src/styles/variables.styl", import.meta.url),
+	"utf8",
+);
+
+const mainStyles = await readFile(
+	new URL("../src/styles/main.css", import.meta.url),
+	"utf8",
+);
+
+describe("Post TOC regressions", () => {
+	it("keeps one persistent post TOC and shares the configured depth", () => {
+		assert.match(
+			mainStyles,
+			/body:has\(#page-overlay-data\[data-is-post="true"\]\) #toc-wrapper\s*\{\s*display:\s*none/,
+		);
+		assert.match(cardTocSource, /const tocDepth = siteConfig\.toc\.depth/);
+		assert.match(cardTocSource, /maxLevel,/);
+		assert.doesNotMatch(cardTocSource, /maxLevel:\s*3/);
+		assert.match(
+			variablesSource,
+			/--toc-width:\s*clamp\(0rem,[\s\S]*?var\(--page-width\)[\s\S]*?22rem\)/,
+		);
+	});
+
+});
