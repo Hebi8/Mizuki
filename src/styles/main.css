@@ -4,13 +4,9 @@
 @import "./albums.css";
 /* 导入追番页面样式 */
 @import "./anime.css";
-/* 导入动画样式 */
-@import "./transition.css";
 @import "./animation-enhancements.css";
 /* 导入渐变按钮样式 */
 @import "./gradient-buttons.css";
-/* 导入 Banner 和网格布局样式 */
-@import "./banner.css";
 /* 加密内容样式已移除，现在直接使用非加密文章的样式 */
 
 @plugin "@tailwindcss/typography";
