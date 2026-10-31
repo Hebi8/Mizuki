@@ -680,3 +680,83 @@ a.card-x
   gap: 6px;
   z-index: 30;
   user-select: none;
+
+// Wiki Link 文章卡片
+a.card-wiki-link
+  display: flex
+  align-items: stretch
+  gap: 1rem
+  margin: 1rem 0
+  padding: 1rem 1.2rem
+  color: var(--tw-prose-body)
+  background: var(--license-block-bg)
+  border: 1px solid var(--line-divider)
+  border-radius: var(--radius-large)
+  text-decoration: none
+  transition: transform .15s ease, background-color .15s ease
+
+  &:hover
+    color: var(--tw-prose-body)
+    background: var(--btn-regular-bg-hover)
+    transform: translateY(-1px)
+
+    .wlc-title
+      color: var(--primary)
+
+  &:active
+    transform: scale(.99)
+
+  .wlc-cover
+    display: block
+    width: 8rem
+    min-width: 8rem
+    min-height: 6rem
+    overflow: hidden
+    border-radius: calc(var(--radius-large) - .35rem)
+    background: var(--btn-regular-bg)
+
+  .wlc-cover-image
+    display: block
+    width: 100%
+    height: 100%
+    min-height: 6rem
+    margin: 0
+    object-fit: cover
+
+  .wlc-info
+    display: flex
+    flex: 1
+    min-width: 0
+    flex-direction: column
+    gap: .4rem
+
+  .wlc-title
+    color: var(--tw-prose-headings)
+    font-size: 1.05rem
+    font-weight: 700
+    transition: color .15s ease
+
+  .wlc-description
+    font-size: .9rem
+    line-height: 1.5
+
+  .wlc-meta
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: .35rem .75rem
+    font-size: .78rem
+    opacity: .8
+
+  .wlc-tags
+    display: flex
+    flex-wrap: wrap
+    gap: .35rem
+
+  @media (max-width: 640px)
+    flex-direction: column
+
+    .wlc-cover
+      width: 100%
+      min-width: 0
+      height: 9rem

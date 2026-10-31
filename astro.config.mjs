@@ -14,13 +14,12 @@ import icon from "astro-icon";
 import { oddmisc } from "oddmisc";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components";
-import rehypeExternalLinks from "rehype-external-links";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
-import { siteConfig } from "./src/config/index.ts";
+import { permalinkConfig, siteConfig } from "./src/config/index.ts";
 import { buildIconInclude } from "./src/plugins/astro-icon-include.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
@@ -29,15 +28,18 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import { ImageGridComponent } from "./src/plugins/rehype-component-image-grid.mjs";
 import { SiteCardComponent } from "./src/plugins/rehype-component-site-card.mjs";
 import { XCardComponent } from "./src/plugins/rehype-component-x-card.mjs";
-import { rehypeImageWidth } from "./src/plugins/rehype-image-width.mjs";
+import { rehypeContentLinks } from "./src/plugins/rehype-content-links.mjs";
+import { rehypeMarkdownImages } from "./src/plugins/rehype-markdown-images.mjs";
 import { rehypeMermaid } from "./src/plugins/rehype-mermaid.mjs";
 import { rehypeWrapTable } from "./src/plugins/rehype-wrap-table.mjs";
 import { remarkContent } from "./src/plugins/remark-content.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkEscapeNumericColons } from "./src/plugins/remark-escape-numeric-colons.mjs";
 import { remarkFixGithubAdmonitions } from "./src/plugins/remark-fix-github-admonitions.js";
+import { remarkMarkSectionized } from "./src/plugins/remark-mark-sectionized.mjs";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkSiteMetadata } from "./src/plugins/remark-site-metadata.mjs";
+import { remarkWikiLink } from "./src/plugins/remark-wiki-link.mjs";
 import { remarkXMetadata } from "./src/plugins/remark-x-metadata.mjs";
 import { largeContentStorePlugin } from "./src/plugins/vite-large-content-store.mjs";
 import { resolveFontMode } from "./src/utils/fontMode.ts";
@@ -303,15 +305,26 @@ export default defineConfig({
 					},
 				],
 				remarkXMetadata,
+				[
+					remarkWikiLink,
+					{
+						permalink: permalinkConfig,
+						imageApi: siteConfig.banner.imageApi,
+						noReferrerDomains:
+							siteConfig.imageOptimization?.noReferrerDomains ?? [],
+					},
+				],
 				remarkSectionize,
+				remarkMarkSectionized,
 				parseDirectiveNode,
 				remarkMermaid,
 			],
 			rehypePlugins: [
 				rehypeKatex,
 				[
-					rehypeExternalLinks,
+					rehypeContentLinks,
 					{
+						siteUrl: siteConfig.siteURL,
 						target: "_blank",
 						rel: ["nofollow", "noopener", "noreferrer"],
 					},
@@ -353,7 +366,13 @@ export default defineConfig({
 						},
 					},
 				],
-				rehypeImageWidth,
+				[
+					rehypeMarkdownImages,
+					{
+						noReferrerDomains:
+							siteConfig.imageOptimization?.noReferrerDomains ?? [],
+					},
+				],
 			],
 		}),
 	},

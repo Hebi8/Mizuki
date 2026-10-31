@@ -1,15 +1,14 @@
 import type { CollectionEntry } from "astro:content";
-import I18nKey from "@i18n/i18nKey";
+import { permalinkConfig } from "../config";
+import I18nKey from "../i18n/i18nKey";
 import {
 	getCurrentLocaleContext,
 	getCurrentLocalePath,
 	getDefaultLocaleInfo,
 	type SupportedLocalePath,
 	withLocalePrefix,
-} from "@i18n/locale";
-import { i18n } from "@i18n/translation";
-
-import { permalinkConfig } from "../config";
+} from "../i18n/locale";
+import { i18n } from "../i18n/translation";
 import { generatePermalinkSlug } from "./permalink-utils";
 import { getCanonicalPostSlugFromId } from "./post-variant-utils";
 import { resolveTaxonomyKey } from "./taxonomy-utils";
@@ -73,9 +72,14 @@ function getPostPath(post: PostUrlSource): string {
 export function getPostUrlForLocale(
 	post: PostUrlSource,
 	localePath: SupportedLocalePath,
+	base = import.meta.env.BASE_URL,
 ): string {
 	const usePrefix = localePath !== getDefaultLocaleInfo().path;
-	return url(withLocalePrefix(getPostPath(post), localePath, usePrefix));
+	return joinUrl(
+		"",
+		base,
+		withLocalePrefix(getPostPath(post), localePath, usePrefix),
+	);
 }
 
 export function getPostUrl(post: CollectionEntry<"posts">): string;

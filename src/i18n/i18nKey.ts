@@ -337,6 +337,8 @@ enum I18nKey {
 	postListLayout = "postListLayout",
 	postListLayoutList = "postListLayoutList",
 	postListLayoutGrid = "postListLayoutGrid",
+	ultrawidePostLayout = "ultrawidePostLayout",
+	ultrawidePostLayoutHint = "ultrawidePostLayoutHint",
 	resetAll = "resetAll",
 	settingsThemeColor = "settingsThemeColor",
 	settingsWallpaper = "settingsWallpaper",
@@ -344,6 +346,7 @@ enum I18nKey {
 	settingsBanner = "settingsBanner",
 	settingsEffects = "settingsEffects",
 	settingsLayout = "settingsLayout",
+	settingsFeatures = "settingsFeatures",
 
 	// 站点统计
 	siteStats = "siteStats",
