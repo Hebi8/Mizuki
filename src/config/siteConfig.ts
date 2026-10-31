@@ -50,10 +50,15 @@ export const siteConfig: SiteConfig = {
 		logo: "/assets/home/logo.png",
 	},
 
-	// 页面自动缩放配置
+	// 旧版页面自动缩放配置。默认关闭，页面尺寸优先交由响应式布局处理。
 	pageScaling: {
-		enable: false, // 是否开启自动缩放
+		enable: false, // 兼容旧站点的可选缩放；不建议通过根字号控制整体布局
 		targetWidth: 2000, // 目标宽度，低于此宽度时开始缩放
+	},
+
+	font: {
+		// custom 保持 ZenMaruGothic -> Loli -> 系统字体的显示顺序；system 不加载任何自定义字体
+		mode: "custom",
 	},
 
 	bangumi: {
@@ -217,7 +222,6 @@ export const siteConfig: SiteConfig = {
 		// }
 	],
 
-	// 字体现在通过 astro.config.mjs 的 fonts 选项配置（Astro Font API）
 	showLastModified: true, // 控制"上次编辑"卡片显示的开关
 	pageProgressBar: {
 		enable: true, // 启用页面顶部进度条

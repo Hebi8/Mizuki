@@ -19,7 +19,7 @@
 
 /* Migrate from v3 config */
 @theme {
-  --font-sans: var(--font-body), var(--font-cjk), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--font-body, ui-sans-serif), var(--font-cjk, system-ui), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --breakpoint-md: 768px;
   --breakpoint-lg: 1280px;
@@ -669,4 +669,9 @@ html {
 }
 :root:not(.dark) .custom-md spoiler {
   --_spoiler-mask: color-mix(in oklch, var(--primary) 55%, white 45%);
+}
+
+/* 文章页只保留 CardTOC；标记随 Swup 主内容更新。浮动目录保持可用。 */
+body:has(#page-overlay-data[data-is-post="true"]) #toc-wrapper {
+	display: none;
 }

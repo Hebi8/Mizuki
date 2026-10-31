@@ -5,6 +5,7 @@ import Pio from "@components/features/pio/Pio.astro";
 import ConfigCarrier from "@components/misc/ConfigCarrier.astro";
 import MusicPlayer from "@components/widgets/music-player/MusicPlayer.svelte";
 import { pioConfig, profileConfig, siteConfig } from "@/config";
+import { resolveFontMode } from "@/utils/fontMode";
 
 const BANNER_HEIGHT = 35;
 const BANNER_HEIGHT_EXTEND = 30;
@@ -56,6 +57,7 @@ const routeLocale = setCurrentLocaleContextFromPath(Astro.url.pathname);
 // defines global css variables
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
+const customFontsEnabled = resolveFontMode(siteConfig) === "custom";
 
 // 获取导航栏透明模式配置
 const navbarTransparentMode =
@@ -155,9 +157,14 @@ const bannerOffset =
 >
 	<head>
 		<meta charset="UTF-8" />
-		<Font cssVariable="--font-body" preload />
-		<Font cssVariable="--font-cjk" />
-		<Font cssVariable="--font-jetbrains-mono" />
+
+        <style is:inline>
+			@layer properties, theme, base, components, utilities;
+		</style>
+
+		{customFontsEnabled && <Font cssVariable="--font-body" preload />}
+		{customFontsEnabled && <Font cssVariable="--font-cjk" />}
+		{customFontsEnabled && <Font cssVariable="--font-jetbrains-mono" />}
 
 		<script is:inline>
 			(function() {
@@ -301,13 +308,15 @@ const bannerOffset =
 	}
 	@layer utilities {
 		@media (width >= 1280px) {
-			.enable-banner #sidebar-sticky {
+			/* Fullscreen removes the banner extension transform, so only the
+			   standard banner layout needs the matching sticky compensation. */
+			.enable-banner:not(.fullscreen-banner) #sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
-			.enable-banner #left-sidebar-sticky {
+			.enable-banner:not(.fullscreen-banner) #left-sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
-			.enable-banner #right-sidebar-sticky {
+			.enable-banner:not(.fullscreen-banner) #right-sidebar-sticky {
 				top: calc(1rem - var(--banner-height-extend)) !important;
 			}
 		}

@@ -70,13 +70,15 @@ export interface SiteConfig {
 		logo?: string; // 网站Logo图片路径
 	};
 
-	// 页面自动缩放配置
+	// 旧版页面自动缩放配置
 	pageScaling?: {
-		enable: boolean; // 是否开启自动缩放
+		enable: boolean; // 默认关闭；启用时保留旧版根字号缩放行为
 		targetWidth?: number; // 目标宽度，低于此宽度时开始缩放
 	};
 
-	// 字体现在通过 astro.config.mjs 的 fonts 选项配置（Astro Font API）
+	font?: {
+		mode?: "custom" | "system"; // custom=加载 ZenMaruGothic、Loli 和 JetBrains Mono；system=不请求自定义字体
+	};
 
 	// 添加bangumi配置
 	bangumi?: {

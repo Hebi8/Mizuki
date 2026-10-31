@@ -14,7 +14,7 @@
 		"update-eroge": "node scripts/update-eroge.mjs",
 		"update-bangumi": "node scripts/update-bangumi.mjs",
 		"update-bilibili": "node scripts/update-bilibili.mjs",
-		"build": "node scripts/update-anime.mjs && node scripts/update-eroge.mjs && astro build && node scripts/generate-seo-redirects.mjs && node scripts/prune-disabled-feature-pages.mjs && pagefind --site dist",
+		"build": "node scripts/update-anime.mjs && node scripts/update-eroge.mjs && astro build && node scripts/generate-seo-redirects.mjs && node scripts/prune-disabled-feature-pages.mjs && pagefind --site dist && node scripts/check-font-loading.mjs",
 		"submit": "node scripts/indexnow-submit.js",
 		"preview": "astro preview",
 		"astro": "astro",
@@ -27,7 +27,10 @@
 		"preinstall": "npx only-allow pnpm",
 		"gsc:auth": "node scripts/gsc-weekly-report.mjs --auth",
 		"gsc:weekly": "node scripts/gsc-weekly-report.mjs",
-		"gsc:analyze": "bash scripts/gsc-weekly-codex-analysis.sh"
+		"gsc:analyze": "bash scripts/gsc-weekly-codex-analysis.sh",
+		"prepare-fonts": "node scripts/prepare-fonts.mjs",
+		"check-fonts": "node scripts/check-font-loading.mjs",
+		"prepare-images": "node scripts/prepare-default-images.mjs"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.9",
@@ -70,11 +73,11 @@
 		"remark-math": "^6.0.0",
 		"remark-sectionize": "^2.1.0",
 		"sanitize-html": "^2.17.5",
-		"satori": "^0.26.0",
 		"sharp": "^0.35.2",
 		"stylus": "^0.64.0",
 		"svelte": "^5.56.4",
 		"tailwindcss": "^4.3.2",
+		"takumi-js": "^2.5.7",
 		"typescript": "^6.0.3",
 		"unist-util-visit": "^5.1.0"
 	},
@@ -95,7 +98,8 @@
 		"@types/sanitize-html": "^2.16.1",
 		"glob": "^13.0.6",
 		"postcss-import": "^16.1.1",
-		"postcss-nesting": "^14.0.0"
+		"postcss-nesting": "^14.0.0",
+		"fonteditor-core": "^2.6.3"
 	},
 	"packageManager": "pnpm@11.5.3"
 }
