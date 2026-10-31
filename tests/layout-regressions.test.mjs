@@ -116,7 +116,7 @@ describe("Post TOC regressions", () => {
 		assert.doesNotMatch(cardTocSource, /maxLevel:\s*3/);
 		assert.match(
 			variablesSource,
-			/--toc-width:\s*clamp\(0rem,[\s\S]*?var\(--page-width\)[\s\S]*?22rem\)/,
+			/--toc-width:\s*clamp\(0rem,[\s\S]*?var\(--layout-page-width\)[\s\S]*?22rem\)/,
 		);
 	});
 });
@@ -130,7 +130,7 @@ describe("Main grid width regressions", () => {
 	it("allows the main track to shrink within the existing sidebar widths", () => {
 		assert.match(
 			gridLayoutUtilsSource,
-			/grid-cols-\[17\.5rem_minmax\(0,1fr\)_17\.5rem\]/,
+			/grid-cols-\[var\(--layout-sidebar-width\)_minmax\(0,1fr\)_var\(--layout-sidebar-width\)\]/,
 		);
 		assert.match(
 			gridLayoutUtilsSource,
@@ -143,7 +143,7 @@ describe("Main grid width regressions", () => {
 		assert.equal(
 			(
 				bannerStyles.match(
-					/grid-template-columns: 17\.5rem minmax\(0, 1fr\) !important/g,
+					/grid-template-columns: var\(--layout-sidebar-width\) minmax\(0, 1fr\) !important/g,
 				) ?? []
 			).length,
 			2,
