@@ -19,7 +19,7 @@ import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
-import { siteConfig } from "./src/config/index.ts";
+import { permalinkConfig, siteConfig } from "./src/config/index.ts";
 import { buildIconInclude } from "./src/plugins/astro-icon-include.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
@@ -38,6 +38,7 @@ import { remarkEscapeNumericColons } from "./src/plugins/remark-escape-numeric-c
 import { remarkFixGithubAdmonitions } from "./src/plugins/remark-fix-github-admonitions.js";
 import { remarkMermaid } from "./src/plugins/remark-mermaid.js";
 import { remarkSiteMetadata } from "./src/plugins/remark-site-metadata.mjs";
+import { remarkWikiLink } from "./src/plugins/remark-wiki-link.mjs";
 import { remarkXMetadata } from "./src/plugins/remark-x-metadata.mjs";
 import { largeContentStorePlugin } from "./src/plugins/vite-large-content-store.mjs";
 import { resolveFontMode } from "./src/utils/fontMode.ts";
@@ -303,6 +304,15 @@ export default defineConfig({
 					},
 				],
 				remarkXMetadata,
+				[
+					remarkWikiLink,
+					{
+						permalink: permalinkConfig,
+						imageApi: siteConfig.banner.imageApi,
+						noReferrerDomains:
+							siteConfig.imageOptimization?.noReferrerDomains ?? [],
+					},
+				],
 				remarkSectionize,
 				parseDirectiveNode,
 				remarkMermaid,

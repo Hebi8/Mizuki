@@ -1,11 +1,11 @@
 import type { CollectionEntry } from "astro:content";
 
 import {
-	getDefaultLocaleInfo,
 	getCurrentLocaleLang,
+	getDefaultLocaleInfo,
 	normalizeLanguageCode,
 	type SupportedLocaleLang,
-} from "@/i18n/locale";
+} from "../i18n/locale";
 
 const KNOWN_LANG_SUFFIXES = new Set([
 	"en",

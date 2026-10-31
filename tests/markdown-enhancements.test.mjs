@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
-	matchesNoReferrerDomain,
 	parseMarkdownImageAlt,
 	rehypeMarkdownImages,
 } from "../src/plugins/rehype-markdown-images.mjs";
+import { matchesNoReferrerDomain } from "../src/utils/image-referrer.ts";
 
 describe("Markdown AST enhancements", () => {
 	it("enhances Markdown images without discarding existing attributes", () => {

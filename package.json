@@ -78,7 +78,9 @@
 		"takumi-js": "^2.5.7",
 		"typescript": "^6.0.3",
 		"unist-util-visit": "^5.1.0",
-		"hast-util-from-html": "^2.0.3"
+		"hast-util-from-html": "^2.0.3",
+		"gray-matter": "^4.0.3",
+		"github-slugger": "^2.0.0"
 	},
 	"devDependencies": {
 		"@astrojs/ts-plugin": "^1.10.9",
