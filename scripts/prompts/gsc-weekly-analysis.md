@@ -4,10 +4,12 @@ You are running as a scheduled local Codex analysis for this Mizuki blog.
 
 Read:
 - `output/gsc/latest.md`
-- `output/gsc/raw/*.json` if you need the raw data behind the report
+- the raw JSON file named in that report if you need the underlying data
 - project files only when needed to connect URLs to templates or content behavior
 
 Do not edit files. Do not run deployment commands. Do not expose token values or OAuth client secrets.
+
+Use the report's page prefix and aggregation when interpreting metrics. Both periods in the current report use the same scope. Do not combine older raw files unless their page prefix and aggregation match; older domain-wide reports are not a comparable baseline. An empty query table does not prove there were no searches.
 
 Write the final answer in Chinese as a concise Markdown report with these sections:
 

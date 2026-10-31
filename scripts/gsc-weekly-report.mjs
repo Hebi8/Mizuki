@@ -41,13 +41,14 @@ async function main() {
 	const previousPeriod = getPreviousPeriod(currentPeriod);
 
 	console.log(
-		`Fetching GSC data for ${config.siteUrl} (${currentPeriod.startDate}..${currentPeriod.endDate})`,
+		`Fetching GSC data for ${config.siteUrl}, pages under ${config.pagePrefix} (${currentPeriod.startDate}..${currentPeriod.endDate})`,
 	);
 
 	const data = await fetchReportData(token, config.siteUrl, {
 		current: currentPeriod,
 		previous: previousPeriod,
 		rowLimit: config.rowLimit,
+		pagePrefix: config.pagePrefix,
 	});
 
 	const weekLabel = getIsoWeekLabel(currentPeriod.endDate);
@@ -73,6 +74,7 @@ async function main() {
 			{
 				generatedAt,
 				siteUrl: config.siteUrl,
+				pagePrefix: config.pagePrefix,
 				currentPeriod,
 				previousPeriod,
 				rowLimit: config.rowLimit,
@@ -146,13 +148,17 @@ async function getConfig(args) {
 		process.env.GSC_SITE_URL ||
 		(await readSiteUrlFromSiteConfig()) ||
 		"https://dreaife.tokyo/";
+	const displaySiteUrl =
+		process.env.GSC_DISPLAY_SITE_URL ||
+		(await readSiteUrlFromSiteConfig()) ||
+		configSiteUrl;
 
 	return {
 		siteUrl: configSiteUrl,
-		displaySiteUrl:
-			process.env.GSC_DISPLAY_SITE_URL ||
-			(await readSiteUrlFromSiteConfig()) ||
-			configSiteUrl,
+		displaySiteUrl,
+		pagePrefix: new URL(
+			args.pagePrefix || process.env.GSC_PAGE_PREFIX || displaySiteUrl,
+		).href,
 		reportDir,
 		tokenFile: resolveFromRoot(
 			args.tokenFile || process.env.GSC_TOKEN_FILE || DEFAULT_TOKEN_FILE,
@@ -462,6 +468,22 @@ async function fetchReportData(token, siteUrl, options) {
 	const current = options.current;
 	const previous = options.previous;
 	const rowLimit = options.rowLimit;
+	const query = (body) =>
+		querySearchAnalytics(token, siteUrl, {
+			...body,
+			aggregationType: "auto",
+			dimensionFilterGroups: [
+				{
+					filters: [
+						{
+							dimension: "page",
+							operator: "includingRegex",
+							expression: `^${options.pagePrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`,
+						},
+					],
+				},
+			],
+		});
 
 	const data = {
 		current: {},
@@ -469,21 +491,21 @@ async function fetchReportData(token, siteUrl, options) {
 		optionalErrors: {},
 	};
 
-	data.current.total = await querySearchAnalytics(token, siteUrl, {
+	data.current.total = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		rowLimit: 1,
 		type: "web",
 		dataState: "final",
 	});
-	data.previous.total = await querySearchAnalytics(token, siteUrl, {
+	data.previous.total = await query({
 		startDate: previous.startDate,
 		endDate: previous.endDate,
 		rowLimit: 1,
 		type: "web",
 		dataState: "final",
 	});
-	data.current.daily = await querySearchAnalytics(token, siteUrl, {
+	data.current.daily = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["date"],
@@ -491,7 +513,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.current.pages = await querySearchAnalytics(token, siteUrl, {
+	data.current.pages = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["page"],
@@ -499,7 +521,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.previous.pages = await querySearchAnalytics(token, siteUrl, {
+	data.previous.pages = await query({
 		startDate: previous.startDate,
 		endDate: previous.endDate,
 		dimensions: ["page"],
@@ -507,7 +529,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.current.queries = await querySearchAnalytics(token, siteUrl, {
+	data.current.queries = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["query"],
@@ -515,7 +537,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.previous.queries = await querySearchAnalytics(token, siteUrl, {
+	data.previous.queries = await query({
 		startDate: previous.startDate,
 		endDate: previous.endDate,
 		dimensions: ["query"],
@@ -523,7 +545,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.current.pageQueries = await querySearchAnalytics(token, siteUrl, {
+	data.current.pageQueries = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["page", "query"],
@@ -531,7 +553,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.current.devices = await querySearchAnalytics(token, siteUrl, {
+	data.current.devices = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["device"],
@@ -539,7 +561,7 @@ async function fetchReportData(token, siteUrl, options) {
 		type: "web",
 		dataState: "final",
 	});
-	data.current.countries = await querySearchAnalytics(token, siteUrl, {
+	data.current.countries = await query({
 		startDate: current.startDate,
 		endDate: current.endDate,
 		dimensions: ["country"],
@@ -549,7 +571,7 @@ async function fetchReportData(token, siteUrl, options) {
 	});
 
 	try {
-		data.current.searchAppearance = await querySearchAnalytics(token, siteUrl, {
+		data.current.searchAppearance = await query({
 			startDate: current.startDate,
 			endDate: current.endDate,
 			dimensions: ["searchAppearance"],
@@ -607,6 +629,10 @@ function buildMarkdownReport(context) {
 	lines.push(`# GSC Weekly Report - ${weekLabel}`);
 	lines.push("");
 	lines.push(`- Property: \`${config.siteUrl}\``);
+	lines.push(`- Page prefix: \`${config.pagePrefix}\``);
+	lines.push(
+		`- Aggregation: \`${data.current.total.responseAggregationType || "auto"}\``,
+	);
 	lines.push(
 		`- Current period: \`${currentPeriod.startDate}\` to \`${currentPeriod.endDate}\``,
 	);
@@ -619,6 +645,10 @@ function buildMarkdownReport(context) {
 	);
 	lines.push("");
 	lines.push("## Summary");
+	lines.push("");
+	lines.push(
+		"Both periods use the same page filter. Historical reports without a page prefix cover the whole property and are not directly comparable.",
+	);
 	lines.push("");
 	lines.push(
 		markdownTable(
@@ -1077,6 +1107,7 @@ function printHelp() {
 Options:
   --auth                    Run the local OAuth flow and save a refresh token.
   --site <siteUrl>          GSC property, e.g. https://dreaife.tokyo/ or sc-domain:dreaife.tokyo.
+  --page-prefix <url>       Only include pages under this URL. Defaults to the blog site URL; env: GSC_PAGE_PREFIX.
   --end-date <YYYY-MM-DD>   Last GSC date to include. Defaults to today minus lag days.
   --days <n>                Number of days in the report period. Default: 7.
   --lag-days <n>            Days to skip from today to avoid incomplete data. Default: 3.

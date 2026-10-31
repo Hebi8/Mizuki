@@ -28,6 +28,7 @@
 		"gsc:auth": "node scripts/gsc-weekly-report.mjs --auth",
 		"gsc:weekly": "node scripts/gsc-weekly-report.mjs",
 		"gsc:analyze": "bash scripts/gsc-weekly-codex-analysis.sh",
+		"gsc:status": "bash scripts/gsc-weekly-codex-analysis.sh --status",
 		"prepare-fonts": "node scripts/prepare-fonts.mjs",
 		"check-fonts": "node scripts/check-font-loading.mjs",
 		"prepare-images": "node scripts/prepare-default-images.mjs"
