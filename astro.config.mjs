@@ -14,7 +14,6 @@ import icon from "astro-icon";
 import { oddmisc } from "oddmisc";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components";
-import rehypeExternalLinks from "rehype-external-links";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive";
@@ -29,7 +28,8 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import { ImageGridComponent } from "./src/plugins/rehype-component-image-grid.mjs";
 import { SiteCardComponent } from "./src/plugins/rehype-component-site-card.mjs";
 import { XCardComponent } from "./src/plugins/rehype-component-x-card.mjs";
-import { rehypeImageWidth } from "./src/plugins/rehype-image-width.mjs";
+import { rehypeContentLinks } from "./src/plugins/rehype-content-links.mjs";
+import { rehypeMarkdownImages } from "./src/plugins/rehype-markdown-images.mjs";
 import { rehypeMermaid } from "./src/plugins/rehype-mermaid.mjs";
 import { rehypeWrapTable } from "./src/plugins/rehype-wrap-table.mjs";
 import { remarkContent } from "./src/plugins/remark-content.mjs";
@@ -310,8 +310,9 @@ export default defineConfig({
 			rehypePlugins: [
 				rehypeKatex,
 				[
-					rehypeExternalLinks,
+					rehypeContentLinks,
 					{
+						siteUrl: siteConfig.siteURL,
 						target: "_blank",
 						rel: ["nofollow", "noopener", "noreferrer"],
 					},
@@ -353,7 +354,13 @@ export default defineConfig({
 						},
 					},
 				],
-				rehypeImageWidth,
+				[
+					rehypeMarkdownImages,
+					{
+						noReferrerDomains:
+							siteConfig.imageOptimization?.noReferrerDomains ?? [],
+					},
+				],
 			],
 		}),
 	},

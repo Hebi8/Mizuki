@@ -1,8 +1,6 @@
 ---
-import { getCategoryLabel, getTagLabel } from "@/utils/taxonomy-utils";
 import { getImage } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { render } from "astro:content";
 import path from "node:path";
 /**
  * 处理 permalink 的文章（包括全局 permalink 和自定义 permalink）
@@ -27,6 +25,7 @@ import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { renderPostContent } from "@utils/content-renderer";
 import { getRelatedPosts, getSortedPosts } from "@utils/content-utils";
 import {
 	generatePermalinkSlug,
@@ -43,8 +42,8 @@ import {
 	relatedPostsConfig,
 	shareConfig,
 } from "src/config";
-
 import { permalinkConfig } from "@/config";
+import { getCategoryLabel, getTagLabel } from "@/utils/taxonomy-utils";
 
 import { profileConfig, siteConfig } from "../config";
 import {
@@ -96,9 +95,10 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 setCurrentLocaleContext(Astro.props.localePath);
-const { Content, headings } = await render(entry);
-
-const { remarkPluginFrontmatter } = await render(entry);
+const { Content, headings, remarkPluginFrontmatter } = await renderPostContent(
+	entry,
+	{ target: "page", site: Astro.site ?? siteConfig.siteURL },
+);
 
 const relatedPosts = relatedPostsConfig.enable
 	? await getRelatedPosts(entry, relatedPostsConfig.maxCount)
