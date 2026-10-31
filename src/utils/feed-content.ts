@@ -197,6 +197,25 @@ function expandCodeGroups(root: ReturnType<typeof parse>) {
 	}
 }
 
+function simplifyForFeed(root: ReturnType<typeof parse>) {
+	root
+		.querySelectorAll(".katex-html,.copy-btn,.copy-btn-icon,a.anchor")
+		.forEach((node) => {
+			node.remove();
+		});
+
+	for (const pre of root.querySelectorAll("pre")) {
+		// node-html-parser keeps <pre> content as raw text, so parse it separately.
+		const lines = parse(pre.innerHTML).querySelectorAll(".ec-line");
+		if (lines.length === 0) continue;
+		const text = lines
+			.map((line) => line.querySelector(".code")?.textContent ?? "")
+			.join("\n");
+		pre.removeAttribute("style");
+		pre.set_content(`<code>${escapeHtml(text)}</code>`);
+	}
+}
+
 function isSpecialUrl(value: string): boolean {
 	return /^(?:data:|blob:|mailto:|tel:|#)/i.test(value);
 }
@@ -254,6 +273,7 @@ export function prepareFeedHtml({
 			node.remove();
 		});
 	expandCodeGroups(root);
+	simplifyForFeed(root);
 	absolutizeUrls(root, postUrl);
 
 	return sanitizeHtml(root.toString(), FEED_SANITIZER_SCHEMA);

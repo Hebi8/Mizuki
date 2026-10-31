@@ -44,6 +44,28 @@ describe("feed content post-processing", () => {
 			/<script|<button|\shidden(?:=|\s|>)|\son(?:click|error)=/i,
 		);
 	});
+
+	it("flattens rendered code, math and heading anchors for feed readers", () => {
+		const html = `
+			<h2 id="setup">Setup<a class="anchor" href="#setup"><span class="anchor-icon">#</span></a></h2>
+			<figure class="frame"><pre data-language="ts" style="--ecMaxLine:16ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#24292e">if (a &lt; b) {</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span class="indent"><span>  </span></span><span>run()</span></div></div></code></pre><div class="copy-btn-icon"></div></figure>
+			<span class="katex"><span class="katex-mathml"><math><mi>x</mi></math></span><span class="katex-html" aria-hidden="true"><span class="mord">x</span></span></span>
+		`;
+
+		const result = prepareFeedHtml({
+			html,
+			site: new URL("https://example.com/"),
+			postUrl: new URL("https://example.com/posts/fixture/"),
+		});
+
+		assert.match(
+			result,
+			/<pre data-language="ts"><code>if \(a &lt; b\) \{\n {2}run\(\)<\/code><\/pre>/,
+		);
+		assert.match(result, /<math><mi>x<\/mi><\/math>/);
+		assert.match(result, /<h2 id="setup">Setup<\/h2>/);
+		assert.doesNotMatch(result, /gutter|class="ln"|katex-html|copy-btn|anchor/);
+	});
 });
 
 describe("Atom XML generation", () => {
