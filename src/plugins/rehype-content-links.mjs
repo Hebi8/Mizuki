@@ -1,4 +1,3 @@
-import { fromHtml } from "hast-util-from-html";
 import { classifyContentLink } from "../utils/content-links.ts";
 
 function relTokens(value) {
@@ -42,12 +41,6 @@ function transformAnchor(node, options) {
 function transformChildren(parent, options) {
 	const nextChildren = [];
 	for (const child of parent.children ?? []) {
-		if (child.type === "raw" && /<a\b/i.test(child.value ?? "")) {
-			const fragment = fromHtml(child.value, { fragment: true });
-			transformChildren(fragment, options);
-			nextChildren.push(...fragment.children);
-			continue;
-		}
 		if (child.type === "element") {
 			if (child.tagName === "a") transformAnchor(child, options);
 			transformChildren(child, options);

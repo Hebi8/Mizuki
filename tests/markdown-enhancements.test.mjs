@@ -63,31 +63,16 @@ describe("Markdown AST enhancements", () => {
 		});
 	});
 
-	it("applies no-referrer rules to raw HTML but skips structural wrapping", () => {
-		const tree = {
-			type: "root",
-			children: [
-				{
-					type: "raw",
-					value:
-						'<div class="image-grid"><img src="https://i.example.com/a.png" alt="Grid w-50%" data-credit="A"></div>',
-				},
-				{
-					type: "raw",
-					value:
-						'<img src="https://cdn.example.net/b.png" alt="Raw" title="Raw caption">',
-				},
-			],
+	it("leaves raw HTML fragments untouched", () => {
+		const raw = {
+			type: "raw",
+			value: '<div align="center">\n<img src="https://i.example.com/a.png">',
 		};
+		const tree = { type: "root", children: [raw] };
 
 		rehypeMarkdownImages({ noReferrerDomains: ["*.example.com"] })(tree);
 
-		const gridImage = tree.children[0].children[0];
-		assert.equal(gridImage.tagName, "img");
-		assert.equal(gridImage.properties.alt, "Grid w-50%");
-		assert.equal(gridImage.properties.referrerPolicy, "no-referrer");
-		assert.equal(tree.children[1].tagName, "figure");
-		assert.equal(tree.children[1].children[0].properties.alt, "Raw");
+		assert.equal(tree.children[0], raw);
 	});
 
 	it("honors data-no-enhance and existing figure boundaries", () => {

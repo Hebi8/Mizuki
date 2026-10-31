@@ -1,4 +1,3 @@
-import { fromHtml } from "hast-util-from-html";
 import { matchesNoReferrerDomain } from "../utils/image-referrer.ts";
 
 const WIDTH_TOKEN = /(?:^|\s)w-(\d{1,3})%(?=\s|$)/g;
@@ -131,13 +130,6 @@ function transformChildren(parent, ancestors, options) {
 	const nextChildren = [];
 
 	for (const child of parent.children ?? []) {
-		if (child.type === "raw" && /<img\b/i.test(child.value ?? "")) {
-			const fragment = fromHtml(child.value, { fragment: true });
-			transformChildren(fragment, ancestors, options);
-			nextChildren.push(...fragment.children);
-			continue;
-		}
-
 		if (child.type !== "element") {
 			nextChildren.push(child);
 			continue;
@@ -165,7 +157,7 @@ function transformChildren(parent, ancestors, options) {
 }
 
 /**
- * Apply one set of Markdown image rules to Markdown and raw HTML images.
+ * Apply one set of Markdown image rules to Markdown images.
  */
 export function rehypeMarkdownImages(options = {}) {
 	const normalizedOptions = {

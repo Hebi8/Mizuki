@@ -69,19 +69,10 @@ describe("shared content link classification", () => {
 		assert.equal(optedOut.properties.target, undefined);
 	});
 
-	it("handles raw HTML links through the same entry point", () => {
-		const tree = {
-			type: "root",
-			children: [
-				{
-					type: "raw",
-					value: '<a href="https://example.com/raw">Raw link</a>',
-				},
-			],
-		};
+	it("leaves raw HTML fragments untouched", () => {
+		const raw = { type: "raw", value: '<a href="https://example.com/raw">' };
+		const tree = { type: "root", children: [raw] };
 		rehypeContentLinks({ siteUrl })(tree);
-		assert.equal(tree.children[0].tagName, "a");
-		assert.equal(tree.children[0].properties.dataContentLinkKind, "internal");
-		assert.equal(tree.children[0].properties.target, undefined);
+		assert.equal(tree.children[0], raw);
 	});
 });
